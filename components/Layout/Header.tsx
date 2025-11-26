@@ -25,19 +25,28 @@ const Header: React.FC = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+  
+  // Header is transparent only if not scrolled AND mobile menu is closed
+  const isTransparent = !isScrolled && !isMobileMenuOpen;
 
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
+        isTransparent ? 'bg-transparent py-5' : 'bg-white/90 backdrop-blur-md shadow-md py-3'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
-            <div className="text-2xl font-bold text-primary tracking-tighter">USANA</div>
-            <div className="hidden sm:block text-sm text-gray-600 border-l border-gray-300 pl-2">
+            <div className={`text-2xl font-bold tracking-tighter transition-colors ${
+              isTransparent ? 'text-white drop-shadow-md' : 'text-primary'
+            }`}>
+              USANA
+            </div>
+            <div className={`hidden sm:block text-sm border-l pl-2 transition-colors ${
+              isTransparent ? 'text-gray-200 border-gray-400 drop-shadow-md' : 'text-gray-600 border-gray-300'
+            }`}>
               {PERSONAL_INFO.TITLE}
             </div>
           </Link>
@@ -50,15 +59,15 @@ const Header: React.FC = () => {
                 to={link.path}
                 className={`text-base font-medium transition-colors ${
                   isActive(link.path) 
-                    ? 'text-primary font-bold' 
-                    : isScrolled ? 'text-gray-700 hover:text-primary' : 'text-gray-800 hover:text-primary'
+                    ? (isTransparent ? 'text-white font-bold drop-shadow-md' : 'text-primary font-bold')
+                    : (isTransparent ? 'text-gray-100 hover:text-white drop-shadow-md' : 'text-gray-700 hover:text-primary')
                 }`}
               >
                 {link.name}
               </Link>
             ))}
             <a href={PERSONAL_INFO.KAKAO_OPENCHAT} target="_blank" rel="noopener noreferrer">
-              <Button variant="secondary" size="sm">
+              <Button variant={isTransparent ? "white" : "secondary"} size="sm">
                 무료 상담 신청
               </Button>
             </a>
@@ -66,7 +75,7 @@ const Header: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden p-2 text-gray-600"
+            className={`md:hidden p-2 transition-colors ${isTransparent ? 'text-white drop-shadow-md' : 'text-gray-600'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
